@@ -5,15 +5,12 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jeuCarte.Carte;
 import protocole.DiffusionConnectionPokerMessage;
-import protocole.DiffusionDebutJeuPokerMessage;
-import reso.IClient;
+import protocole.DiffusionElectionPokerMessage;
 import reso.IReso;
 
 public class Joueur implements Serializable {
@@ -114,10 +111,13 @@ public class Joueur implements Serializable {
 
     // Attente d'une minute avant d'envoyer un message de fin d'?coute (fin des connections)
     public void finEcoute() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
-        Thread.sleep(20000);
-        System.out.println("FIN DU CHRONO | On fait un broadcast de fin d'attente");
-        reso.broadcastMessage(nom, new DiffusionDebutJeuPokerMessage(adversaires));
-        Thread.sleep(3000);
+        Thread.sleep(10000);
+        if(client.getEnEcoute()) {
+            System.out.println("FIN DU CHRONO | On fait un broadcast de fin d'attente");
+            client.setEnEcoute(false);
+            reso.broadcastMessage(nom, new DiffusionElectionPokerMessage(adversaires));
+            Thread.sleep(3000);
+        }
     }
 
     // Le joueur qui a le jeton prend la valeur du jeton, 

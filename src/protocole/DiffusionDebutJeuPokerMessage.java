@@ -20,6 +20,6 @@ public class DiffusionDebutJeuPokerMessage extends PokerMessage implements Seria
 
     public ArrayList<String> getJoueursList() {
         return joueursList;
-    }    
+    }   
     
 }
