@@ -5,9 +5,6 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import reso.IClient;
-import reso.IReso;
-
 public class ReceiverTemp extends UnicastRemoteObject implements IClient {
 
 	private static final long serialVersionUID = 842940924381059064L;

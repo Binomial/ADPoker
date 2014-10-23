@@ -1,5 +1,6 @@
 package reso;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -15,8 +16,7 @@ public class LauncherReso {
 			registry.rebind(IReso.NAME, reso);
 			
 			System.out.println("Reso successfully launched!");
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (RemoteException ex) {
 		}
 
 	}

@@ -1,7 +1,5 @@
 package protocole;
 
-import java.io.Serializable;
-
 /**
  * 
  * @class DiffusionConnectionPokerMessage
