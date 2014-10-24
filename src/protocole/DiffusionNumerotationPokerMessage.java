@@ -14,7 +14,7 @@ public class DiffusionNumerotationPokerMessage extends PokerMessage implements S
     private List <String> joueursList;
     
     public DiffusionNumerotationPokerMessage(List<String> joueursList) {
-        super(TypeMessage.DIFFUSION_NUMEROTATION);
+        super(TypeMessage.DIFFUSION_ELECTION);
         this.joueursList = joueursList;
     }
     

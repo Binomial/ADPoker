@@ -90,7 +90,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
 
                 // On recoit le lancement de l'election
-                case DIFFUSION_NUMEROTATION:
+                case DIFFUSION_ELECTION:
                     enEcoute = false;
                     DiffusionNumerotationPokerMessage msg_temp = (DiffusionNumerotationPokerMessage) pm;
                     
