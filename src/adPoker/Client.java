@@ -34,10 +34,11 @@ public class Client extends UnicastRemoteObject implements IClient {
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         super();
         this.nom = nom;
-        ejection = false;
-        reso = (IReso) Naming.lookup(IReso.NAME);
-        enEcoute = true;
-        adversaires = new ArrayList<>();
+        this.ejection = false;
+        this.reso = (IReso) Naming.lookup(IReso.NAME);
+        this.enEcoute = true;
+        this.adversaires = new ArrayList<>();
+        this.id = -1;
     }
 
     List<String> getAdversaires() {
