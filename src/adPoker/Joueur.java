@@ -110,8 +110,12 @@ public class Joueur implements Serializable {
             client.setEnEcoute(false);
             adversaires = client.getAdversaires();
             reso.broadcastMessage(nom, new DiffusionNumerotationPokerMessage(adversaires));
-            client.setId(client.alea());
-            System.out.println("mon ID : " + client.getId());
+            
+            Thread.sleep(5000);
+            if(client.getId() == -1){
+                client.setId(client.alea());
+                System.out.println("mon ID : " + client.getId());
+            }
         }
     }
     
