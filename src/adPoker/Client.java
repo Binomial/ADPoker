@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import protocole.EjectionPokerMessage;
+import protocole.DiffusionNumerotationPokerMessage;
 import protocole.PokerMessage;
 import protocole.ReponseConnectionPokerMessage;
 import reso.IClient;
@@ -71,8 +71,7 @@ public class Client extends UnicastRemoteObject implements IClient {
 
                 // Un nouveau joueur nous envoie son nom
                 case DIFFUSION_CONNECTION:
-
-                        testDer = false; // On est pas le dernier
+                        testDer = false; // On est pas le dernier a s'etre connecte
                         adversaires.add(from);
                         ReponseConnectionPokerMessage msg2 = new ReponseConnectionPokerMessage(nom);
                         reso.sendMessage(nom, from, msg2);
@@ -82,6 +81,10 @@ public class Client extends UnicastRemoteObject implements IClient {
 
                 // On recoit un lancement de l'election
                 case DIFFUSION_ELECTION:
+                    System.out.println(from + "Nous envoie sa liste");
+                    DiffusionNumerotationPokerMessage msgNum = (DiffusionNumerotationPokerMessage) msg;
+                    adversaires = msgNum.getJoueursList();
+                    System.out.println("Liste ok");
                     break;
 
                 case DIFFUSION_DEBUT_JEU:

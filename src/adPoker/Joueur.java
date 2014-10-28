@@ -107,13 +107,14 @@ public class Joueur implements Serializable {
     public void ecoute() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         Thread.sleep(10000);
 
-        if (client.getTest()) { // On est le dernier
+        // Si on est le dernier joueur a s'etre connecte
+        if (client.getTest()) {
             System.out.println("FIN DU CHRONO");
             adversaires = client.getAdversaires();
             reso.broadcastMessage(nom, new DiffusionNumerotationPokerMessage(adversaires));
-            System.err.println("YOUUUUUU");
+            System.err.println("Tableau adverse envoye");
         } else {
-            System.out.println("En attente des autres");
+            System.out.println("Attante prolonge");
         }
     }
 
