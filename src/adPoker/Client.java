@@ -85,8 +85,31 @@ public class Client extends UnicastRemoteObject implements IClient {
                     DiffusionNumerotationPokerMessage msgNum = (DiffusionNumerotationPokerMessage) msg;
                     adversaires = msgNum.getJoueursList();
                     System.out.println("Liste ok");
+                    
+                    id = alea();
+                    DiffusionNumerotationPokerMessage msgDiffS = new DiffusionNumerotationPokerMessage(id);
+                    reso.broadcastMessage(nom, msgDiffS);
+                    
                     break;
 
+                case DIFFUSION_NUM:
+                    // Quand on re?oit le num d'un joueur, 
+                    // on compare le num avec le notre
+                    // Si pareil (on retire) ou on retire les 2 et ont se renvoie
+                    DiffusionNumerotationPokerMessage msgDiff = (DiffusionNumerotationPokerMessage) msg;
+                    int idAdv = msgDiff.getId();
+                    if(idAdv != id) {
+                        System.out.println("Ok pour moi et " + from);
+                    }else{
+                        System.err.println("Moi et " + from + "avaons pour ID " + id);
+                        id = alea();
+                        DiffusionNumerotationPokerMessage msgD = new DiffusionNumerotationPokerMessage(id);
+                        reso.broadcastMessage(nom, msgD);
+                    }
+                    
+                    
+                    break;
+                    
                 case DIFFUSION_DEBUT_JEU:
                     break;
 
