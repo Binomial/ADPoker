@@ -95,6 +95,7 @@ public class Joueur implements Serializable {
     // Envoie le nom au autres joueurs par broadcast
     public void connection(String ip, int port) throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         setReso((IReso) Naming.lookup(IReso.NAME));
+        client.adversaires.add(nom);
         reso.declareClient(this.nom, client);
         System.out.println("Declaration envoyee");
         DiffusionConnectionPokerMessage msg2 = new DiffusionConnectionPokerMessage(nom);
@@ -104,27 +105,24 @@ public class Joueur implements Serializable {
 
     // Attente d'une minute avant d'envoyer un message de fin d'ecoute (fin des connections)
     public void ecoute() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
-        Thread.sleep(20000);
-        if (client.getEnEcoute()) {
-            System.out.println("FIN DU CHRONO | On fait un broadcast de fin d'attente");
-            client.setEnEcoute(false);
+        Thread.sleep(10000);
+
+        if (client.getTest()) { // On est le dernier
+            System.out.println("FIN DU CHRONO");
             adversaires = client.getAdversaires();
             reso.broadcastMessage(nom, new DiffusionNumerotationPokerMessage(adversaires));
-            
-            Thread.sleep(5000);
-            if(client.getId() == -1){
-                client.setId(client.alea());
-                System.out.println("mon ID : " + client.getId());
-            }
+            System.err.println("YOUUUUUU");
+        } else {
+            System.out.println("En attente des autres");
         }
     }
-    
+
     public static void main(String[] args) {
         try {
             String nom = args[0];
 
             Joueur joueurLocal = new Joueur(args[0]);
-            
+
             joueurLocal.connection("localhost", IReso.PORT);
             joueurLocal.ecoute();
 
