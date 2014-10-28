@@ -96,7 +96,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                     DiffusionNumerotationPokerMessage msg_temp = (DiffusionNumerotationPokerMessage) pm;
                     
                     if (adversaires.size() != msg_temp.getNbAdversaire()) {
-                        System.out.println("Mise ? jour de la liste des adversaires");
+                        System.out.println("Mise a jour de la liste des adversaires");
                         adversaires.clear();
                         adversaires = msg_temp.getJoueursList();
                         System.out.println("MAJ ok");
