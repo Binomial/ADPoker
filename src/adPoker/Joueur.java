@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jeuCarte.Carte;
 import protocole.DiffusionConnectionPokerMessage;
+import protocole.DiffusionFinAttentePokerMessage;
 import protocole.DiffusionNumerotationPokerMessage;
 import reso.IReso;
 
@@ -95,7 +96,7 @@ public class Joueur implements Serializable {
     // Envoie le nom au autres joueurs par broadcast
     public void connection(String ip, int port) throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         setReso((IReso) Naming.lookup(IReso.NAME));
-        client.adversaires.add(nom);
+       
         reso.declareClient(this.nom, client);
         System.out.println("Declaration envoyee");
         DiffusionConnectionPokerMessage msg2 = new DiffusionConnectionPokerMessage(nom);
@@ -107,20 +108,15 @@ public class Joueur implements Serializable {
     public void ecoute() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         Thread.sleep(10000);
 
-        // Si on est le dernier joueur a s'etre connecte
-        if (client.getTest()) {
             System.out.println("FIN DU CHRONO");
             adversaires = client.getAdversaires();
-            reso.broadcastMessage(nom, new DiffusionNumerotationPokerMessage(adversaires));
+            reso.broadcastMessage(nom, new DiffusionFinAttentePokerMessage(adversaires));
             System.err.println("Tableau adverse envoye");
-        } else {
-            System.out.println("Attante prolonge");
-        }
     }
 
     public static void main(String[] args) {
         try {
-            String nom = args[0];
+            //String nom = args[0];
 
             Joueur joueurLocal = new Joueur(args[0]);
 

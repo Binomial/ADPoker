@@ -11,25 +11,21 @@ import java.util.List;
  */
 public class DiffusionNumerotationPokerMessage extends PokerMessage implements Serializable{
 
-    private List <String> joueursList;
     private int id;
+    private int nbTour;
+   
     
-    public DiffusionNumerotationPokerMessage(List<String> joueursList) {
-        super(TypeMessage.DIFFUSION_ELECTION);
-        this.joueursList = joueursList;
-    }
-    
-    public DiffusionNumerotationPokerMessage(int id) {
+    public DiffusionNumerotationPokerMessage(int id, int nbTour) {
         super(TypeMessage.DIFFUSION_NUM);
         this.id = id;
+        this.nbTour = nbTour;
     }
-    
-    public List<String> getJoueursList() {
-        return this.joueursList;
-    }    
     
     public int getId() {
         return id;
     }
-        
+    
+    public int getNumTour() {
+        return nbTour;
+    }
 }
