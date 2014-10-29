@@ -33,11 +33,12 @@ public class Client extends UnicastRemoteObject implements IClient {
 
     boolean estPret;
 
-    void afficheAdv () {
-        for(String i : listJoueurs) {
+    void afficheAdv() {
+        for (String i : listJoueurs) {
             System.out.println(i);
         }
     }
+
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         super();
         this.nom = nom;
@@ -62,7 +63,7 @@ public class Client extends UnicastRemoteObject implements IClient {
         this.id = id;
     }
 
-    // Retourne un nombre al?atoire de 0 au nombre d'aversaires
+    // Retourne un nombre aleatoire de 0 au nombre d'aversaires
     int alea() {
         Random rand = new Random();
         int temp = rand.nextInt(listNumDispo.size() - 0 + 1) + 0;
@@ -81,15 +82,14 @@ public class Client extends UnicastRemoteObject implements IClient {
         PokerMessage pm = ((PokerMessage) msg);
 
         // Le message ne vient pas de nous
-        //if (!from.equals(nom)) {
         switch (pm.getType()) {
 
             // Un nouveau joueur nous envoie son nom
             case DIFFUSION_CONNECTION:
-                
+
                 listJoueurs.add(from);
-                    
-                if(! nom.equals(from)) {
+
+                if (!nom.equals(from)) {
                     ReponseConnectionPokerMessage msg2 = new ReponseConnectionPokerMessage(nom);
                     reso.sendMessage(nom, from, msg2);
                     System.out.println(from + " a rejoint la partie");
@@ -99,7 +99,7 @@ public class Client extends UnicastRemoteObject implements IClient {
             // Un joueur a repondu suite a l'envoie de notre broadcast
             case REPONSE_CONNECTION:
                 // si le nom est deja dans la liste nom connecter avant ou en meme temps
-                if (! listJoueurs.contains(nom)) {
+                if (! listJoueurs.contains(from)) {
                     listJoueurs.add(from);
                     ReponseConnectionPokerMessage msg_temp2 = (ReponseConnectionPokerMessage) msg;
                     System.out.println(msg_temp2.getNom() + " nous a accepte");
@@ -107,31 +107,32 @@ public class Client extends UnicastRemoteObject implements IClient {
                     System.err.println(from + " s'est connecte en meme temps que nous");
                 }
                 break;
-                
+
             // Un joueur a attendu 1 min
             case DIFFUSION_FIN_ATTENTE:
-                
+                System.out.println("On recoit une fin de "+ from);
                 DiffusionFinAttentePokerMessage msgFin = (DiffusionFinAttentePokerMessage) msg;
-               
+
                 // Si sa liste d'adversaire est plus grande que la notre, on met a jour
-                if(msgFin.getJoueursList().size() < listJoueurs.size()) {
+                if (msgFin.getJoueursList().size() > listJoueurs.size()) {
                     System.out.println(from + " nous envoie sa liste");
                     listJoueurs = msgFin.getJoueursList();
                     System.out.println("Liste ok");
                 }
-                
+
                 System.out.println("Notre liste de joueur : ");
                 afficheAdv();
-                
+
                 advSansNum = listJoueurs.size();
                 System.out.println(advSansNum + " joueur sans numero");
-                
+
                 id = alea();
                 System.out.println("J'ai tire " + id);
-                
+
                 DiffusionNumerotationPokerMessage msgDiffS = new DiffusionNumerotationPokerMessage(id, nbTour);
                 reso.broadcastMessage(nom, msgDiffS);
                 System.out.println("Mon id est broadcaste");
+
                 break;
 
             case DIFFUSION_NUM:
@@ -156,7 +157,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                                 // Fin
                             }
                         } else {
-                            System.err.println("Pas bon pour moi " + nom +" et " + from + " id " + id);
+                            System.err.println("Pas bon pour moi " + nom + " et " + from + " id " + id);
                         }
                     }
                 }
@@ -174,7 +175,6 @@ public class Client extends UnicastRemoteObject implements IClient {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }
-        //}
     }
 
     void setEstPret(boolean b) {

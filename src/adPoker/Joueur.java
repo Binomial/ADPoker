@@ -111,7 +111,8 @@ public class Joueur implements Serializable {
             System.out.println("FIN DU CHRONO");
             adversaires = client.getAdversaires();
             reso.broadcastMessage(nom, new DiffusionFinAttentePokerMessage(adversaires));
-            System.err.println("Tableau adverse envoye");
+            System.out.println("Tableau adverse envoye");
+            System.out.println("dud");
     }
 
     public static void main(String[] args) {
