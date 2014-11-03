@@ -1,4 +1,0 @@
-ADPoker
-=======
-
-Projet d'AD

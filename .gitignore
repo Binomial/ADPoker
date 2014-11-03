@@ -4,3 +4,8 @@ dist/
 build/
 *.inc
 *.properties
+nbproject
+build.xml
+projet.pdf
+launcher.sh
+README.md
