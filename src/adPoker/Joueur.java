@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jeuCarte.Carte;
 import protocole.DiffusionConnectionPokerMessage;
-import protocole.DiffusionNumerotationPokerMessage;
+import protocole.DiffusionDebutNumerotationPokerMessage;
 import reso.IReso;
 
 public class Joueur implements Serializable {
@@ -24,7 +24,6 @@ public class Joueur implements Serializable {
     private boolean jeton;
     private boolean maitre;
     private IReso reso;
-    private String nomVoisin;
     private Client client;
 
     public Joueur(String nom) throws RemoteException, NotBoundException, MalformedURLException {
@@ -79,9 +78,9 @@ public class Joueur implements Serializable {
         return adversaires;
     }
 
-    public void setAdversaires(List<String> adversaires) {
-        this.adversaires = adversaires;
-    }
+//    public void setAdversaires(List<String> adversaires) {
+//        this.adversaires = adversaires;
+//    }
 
     public IReso getReso() {
         return reso;
@@ -109,9 +108,10 @@ public class Joueur implements Serializable {
             System.out.println("FIN DU CHRONO | On fait un broadcast de fin d'attente");
             client.setEnEcoute(false);
             adversaires = client.getAdversaires();
-            reso.broadcastMessage(nom, new DiffusionNumerotationPokerMessage(adversaires));
-            client.setId(client.alea());
+            reso.broadcastMessage(nom, new DiffusionDebutNumerotationPokerMessage(adversaires));
+            //client.setId(client.alea());
             System.out.println("mon ID : " + client.getId());
+            System.out.println("mon Nom : " + client.getNom());
         }
     }
     
@@ -120,7 +120,7 @@ public class Joueur implements Serializable {
             String nom = args[0];
 
             Joueur joueurLocal = new Joueur(args[0]);
-            
+            System.out.println("NOM : "+joueurLocal.getNom());
             joueurLocal.connection("localhost", IReso.PORT);
             joueurLocal.ecoute();
 
