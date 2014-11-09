@@ -1,5 +1,6 @@
 package protocole;
 
+import adPoker.Adversaire;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,14 +12,14 @@ import java.util.List;
  */
 public class DiffusionDebutNumerotationPokerMessage extends PokerMessage implements Serializable{
 
-    private List <String> joueursList;
+    private List <Adversaire> joueursList;
     
-    public DiffusionDebutNumerotationPokerMessage(List<String> joueursList) {
+    public DiffusionDebutNumerotationPokerMessage(List<Adversaire> joueursList) {
         super(TypeMessage.DIFFUSION_NUMEROTATION);
         this.joueursList = joueursList;
     }
     
-    public List<String> getJoueursList() {
+    public List<Adversaire> getJoueursList() {
         return this.joueursList;
     }    
     
