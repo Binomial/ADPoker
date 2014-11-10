@@ -9,6 +9,8 @@ public enum TypeMessage {
     MESSAGE_NUMEROTATION,//les joueurs envoient leur numero
     REPONSE_NUMEROTATION,//les joueurs se renvoient un ack 
     DIFFUSION_FIN_NUMEROTATION,
-    DIFFUSION_EJECTION
+    DIFFUSION_EJECTION,
+    MESSAGE_ELECTION,
+    DIFFUSION_MAITRE
     
 }
