@@ -1,8 +1,10 @@
-package protocole;
+package protocole.numerotation;
 
 import adPoker.Adversaire;
 import java.io.Serializable;
 import java.util.List;
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 /**
  * 

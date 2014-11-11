@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import protocole.DiffusionDebutNumerotationPokerMessage;
-import protocole.DiffusionFinNumerotationPokerMessage;
-import protocole.DiffusionMaitre;
-import protocole.DiffusionNumerotationPokerMessage;
-import protocole.EjectionPokerMessage;
-import protocole.ElectionPokerMessage;
+import protocole.numerotation.DiffusionDebutNumerotationPokerMessage;
+import protocole.numerotation.DiffusionFinNumerotationPokerMessage;
+import protocole.election.DiffusionMaitre;
+import protocole.numerotation.DiffusionNumerotationPokerMessage;
+import protocole.connection.EjectionPokerMessage;
+import protocole.election.ElectionPokerMessage;
 import protocole.PokerMessage;
-import protocole.ReponseConnectionPokerMessage;
-import protocole.ReponseNumerotationPokerMessage;
-import protocole.TypeReponseNumerotation;
+import protocole.connection.ReponseConnectionPokerMessage;
+import protocole.numerotation.ReponseNumerotationPokerMessage;
+import protocole.numerotation.TypeReponseNumerotation;
 import reso.IClient;
 import reso.IReso;
 
@@ -34,7 +34,6 @@ public class Client extends UnicastRemoteObject implements IClient {
     private IReso reso;
     private boolean enEcoute; // Permet d'ignorer les joueurs se connectant apres le boradcast d'une minute
     private boolean ejection; // Permet d'ejecter un joueur qui se connecte trop tard
-    private boolean jeton;
     private List<Adversaire> adversaires;
     //numerotation
     private int id;
@@ -55,7 +54,6 @@ public class Client extends UnicastRemoteObject implements IClient {
         id = -1;
         numerotationOk = 0;
         numerotationTerminee = 0;
-        jeton = false;
     }
 
     List<Adversaire> getAdversaires() {
@@ -173,9 +171,6 @@ public class Client extends UnicastRemoteObject implements IClient {
                     numerotationOk++;
                     if (numerotationOk == nbConflit) {
                         System.out.println("Numerotation finie" + (numerotationOk) + "/" + nbConflit);
-                        if (id == 0) {
-                            jeton = true;
-                        }
                         reso.broadcastMessage(nom, new DiffusionFinNumerotationPokerMessage(id));
                     } else {
                         System.out.println("Numerotation pas finie" + (numerotationOk) + "/" + nbConflit);
@@ -213,7 +208,6 @@ public class Client extends UnicastRemoteObject implements IClient {
                     if (adv.getNom().compareTo(from) == 0) {
                         System.out.println(adv.getNom() + "=>" + msgFinNumerotation_temp.getId());
                         adv.setId(msgFinNumerotation_temp.getId()); //attributuion de l'ID
-
                     }
                 }
                 for (Adversaire adv : adversaires) {
@@ -222,32 +216,29 @@ public class Client extends UnicastRemoteObject implements IClient {
                     }
                 }
                 if (numerotationTerminee == adversaires.size()) {
+
                     System.out.println("::Numerotation Terminee !!!:::" + numerotationTerminee);
                     System.out.println("Pr?t pour l'election, mon adv suivant est" + adversaireSuivant.getNom());
-                    ElectionPokerMessage message = new ElectionPokerMessage(id);
+                    ElectionPokerMessage message = new ElectionPokerMessage(id, id);
                     numeroPlusFort = id;
-                    if (jeton) {
-                        System.out.println("DEBUT ELECTION");
-                        reso.sendMessage(nom, adversaireSuivant.getNom(), message);
-                        jeton = false;
-                    }
+                    System.out.println("DEBUT ELECTION");
+                    reso.sendMessage(nom, adversaireSuivant.getNom(), message);
+
                 } else {
                     System.out.println("::Numerotation PAS Terminee !!!:::" + numerotationTerminee);
                 }
                 break;
+
             case MESSAGE_ELECTION:
-                jeton = true;
                 ElectionPokerMessage msgElection_temp = (ElectionPokerMessage) pm;
-                System.out.println("numLePlusFort : " + numeroPlusFort + "idRecu" + msgElection_temp.getId());
-                if (msgElection_temp.getId() > numeroPlusFort) {
-                    numeroPlusFort = msgElection_temp.getId();
-                    jeton = false;
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(numeroPlusFort));
+                System.out.println("numLePlusFort : " + numeroPlusFort + "idRecu" + msgElection_temp.getNumeroPlusFort());
+                if (msgElection_temp.getNumeroPlusFort() > numeroPlusFort) {
+                    numeroPlusFort = msgElection_temp.getNumeroPlusFort();
+                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(msgElection_temp.getId(), numeroPlusFort));
                     System.out.println("numleplusfort : " + numeroPlusFort);
-                } else if (msgElection_temp.getId() < numeroPlusFort) {
-                    jeton = false;
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(numeroPlusFort));
-                } else if (msgElection_temp.getId() == numeroPlusFort) {
+                } else if (msgElection_temp.getNumeroPlusFort() < numeroPlusFort) {
+                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(msgElection_temp.getId(), numeroPlusFort));
+                } else if (msgElection_temp.getNumeroPlusFort() == id && msgElection_temp.getId() == id) {
                     System.out.println("broadcast maitre");
                     reso.broadcastMessage(nom, new DiffusionMaitre(nom));
                 }

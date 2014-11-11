@@ -1,4 +1,7 @@
-package protocole;
+package protocole.connection;
+
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 /**
  * 

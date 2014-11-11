@@ -1,6 +1,8 @@
-package protocole;
+package protocole.election;
 
 import adPoker.Adversaire;
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 
 public class DiffusionMaitre extends PokerMessage{

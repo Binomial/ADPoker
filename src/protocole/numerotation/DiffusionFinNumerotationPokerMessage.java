@@ -1,4 +1,7 @@
-package protocole;
+package protocole.numerotation;
+
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 
 public class DiffusionFinNumerotationPokerMessage extends PokerMessage {

@@ -1,6 +1,8 @@
-package protocole;
+package protocole.connection;
 
 import java.io.Serializable;
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 public class ReponseConnectionPokerMessage extends PokerMessage implements Serializable {
 

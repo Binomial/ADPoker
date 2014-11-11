@@ -1,4 +1,4 @@
-package protocole;
+package protocole.numerotation;
 
 
 public enum TypeReponseNumerotation {

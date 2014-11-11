@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import jeuCarte.Carte;
-import protocole.DiffusionConnectionPokerMessage;
-import protocole.DiffusionDebutNumerotationPokerMessage;
+import protocole.connection.DiffusionConnectionPokerMessage;
+import protocole.numerotation.DiffusionDebutNumerotationPokerMessage;
 import reso.IReso;
 
 public class Joueur implements Serializable {
@@ -98,6 +98,8 @@ public class Joueur implements Serializable {
         } catch (NotBoundException | InterruptedException ex) {
             //Logger.getLogger(Joueur.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR2");
+        } catch(Exception exx){
+            exx.printStackTrace();
         }
     }
 

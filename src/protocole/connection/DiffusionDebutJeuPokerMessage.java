@@ -1,7 +1,9 @@
-package protocole;
+package protocole.connection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import protocole.PokerMessage;
+import protocole.TypeMessage;
 
 /**
  * @class DiffusionDebutJeuPokerMessage
