@@ -20,6 +20,7 @@ import protocole.numerotation.DiffusionNumerotationPokerMessage;
 import protocole.connection.EjectionPokerMessage;
 import protocole.election.ElectionPokerMessage;
 import protocole.PokerMessage;
+import protocole.affiche.AfficheCartePokerMessage;
 import protocole.connection.ReponseConnectionPokerMessage;
 import protocole.distribution.DistributionPokerMessage;
 import protocole.echange.EchangePokerMessage;
@@ -52,6 +53,8 @@ public class Client extends UnicastRemoteObject implements IClient {
     private Joueur maitre;
     //echange
     private int nbCarteAChanger;
+    private int nbTour;
+    public static final int NB_TOUR_MAX = 3;
 
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         super();
@@ -64,6 +67,7 @@ public class Client extends UnicastRemoteObject implements IClient {
         id = -1;
         numerotationOk = 0;
         numerotationTerminee = 0;
+        nbTour = 0;
     }
 
     List<Joueur> getAdversaires() {
@@ -270,44 +274,80 @@ public class Client extends UnicastRemoteObject implements IClient {
                 System.out.println("maitre : " + msgMaitre_temp.getMaitre().getNom());
                 break;
 
-            case MESSAGE_DISTRIBUTION:
+             case MESSAGE_DISTRIBUTION:
                 DistributionPokerMessage msgDistribution_temp = (DistributionPokerMessage) pm;
                 cartes.add(msgDistribution_temp.getCarte());
                 System.out.println(msgDistribution_temp.getCarte());
                 if (cartes.size() == 5) {
-                    System.out.println("Cartes re?us");
-                    nbCarteAChanger = alea(0, 5);
-                    System.out.println("Carte a echangee : " + nbCarteAChanger);
+                    System.out.println("Cartes recus, on attend notr tour pour echanger");
+
+                    if (from.compareTo(nom) == 0) {
+                        System.out.println("Envoi du message d'init echange");
+                        reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
+                        System.out.println("FIN Envoi du message d'init echange");
+
+                    }
                 }
+
                 break;
 
-            case REPONSE_AU_MAITRE:                
+            case REPONSE_AU_MAITRE:
                 ReponseMaitrePokerMessage msgReponseMaitre_temp = (ReponseMaitrePokerMessage) pm;
-                System.out.println("Carte recu : "+ msgReponseMaitre_temp.getCarte());
+                System.out.println("Carte recu de l echange : " + msgReponseMaitre_temp.getCarte());
                 jeu.ajoutCarte(msgReponseMaitre_temp.getCarte());
-                ReponseEchangePokerMessage msgKriss = new ReponseEchangePokerMessage(jeu.nvlleCarte());
+                Carte nouvelleCarte = jeu.nvlleCarte();
+                ReponseEchangePokerMessage msgKriss = new ReponseEchangePokerMessage(nouvelleCarte);
                 reso.sendMessage(nom, from, msgKriss);
-                System.out.println("Carte envoye");
+                System.out.println("Carte envoye " + nouvelleCarte);
                 break;
 
             case MESSAGE_ECHANGE:
                 EchangePokerMessage msgEchange_temp = (EchangePokerMessage) pm;
-                System.out.println("ordinal message"+msgEchange_temp.getTypeEchange()+" ordinal enum"+TypeEchange.ECHANGE);
+                System.out.println("ordinal message" + msgEchange_temp.getTypeEchange() + " ordinal enum" + TypeEchange.ECHANGE);
                 if (msgEchange_temp.getTypeEchange().ordinal() == TypeEchange.ECHANGE.ordinal()) {
                     System.out.println("ECHANGE");
                     ReponseEchangePokerMessage msg_EchangeCarte = (ReponseEchangePokerMessage) msgEchange_temp;
                     cartes.add(msg_EchangeCarte.getCarte());
+                    System.out.println("Nouvelle carte : " + msg_EchangeCarte.getCarte());
                 } else {
                     System.out.println("INIT");
+                    nbCarteAChanger = alea(2, 5);
+                    System.out.println("Carte a echangee : " + nbCarteAChanger);
                 }
-                if (nbCarteAChanger != 0) {
+                if (nbCarteAChanger > 0) {
                     ReponseMaitrePokerMessage reponseEchange = new ReponseMaitrePokerMessage(cartes.remove(0));
-                    System.out.println("Nom du maitre : "+maitre.getNom());
+                    System.out.println("Nom du maitre : " + maitre.getNom());
                     reso.sendMessage(nom, maitre.getNom(), reponseEchange);
                     nbCarteAChanger--;
                     System.out.println("Carte a echangee : " + nbCarteAChanger + "j'envoie : " + reponseEchange.getCarte());
                 } else {
-                    System.out.println("passage de jeton");
+                    System.out.println("passage de jeton a " + adversaireSuivant.getNom());
+                    if (nom.compareTo(maitre.getNom()) == 0) {
+                        nbTour++;
+                        if (nbTour == NB_TOUR_MAX) {
+                            System.out.println("Fin des echanges");
+                            reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
+                        } else {
+                            System.out.println("Fin du tour " + nbTour);
+                            reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
+                        }
+
+                    } else {
+                        reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
+                    }
+                }
+
+                break;
+            case MESSAGE_AFFICHE:
+                System.out.println(nom + ":" + cartes.remove(0));
+                if (nom.compareTo(maitre.getNom()) == 0) {
+
+                }
+                if (cartes.isEmpty()) {
+                    System.out.println("FIN DE LA PARTIE");
+                    //exit
+                } else {
+                    reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
                 }
 
                 break;
