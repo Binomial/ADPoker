@@ -92,7 +92,7 @@ public class MainClient implements Serializable {
         try {
             String nom = args[0];
             
-            File ff=new File("ADPoker/loger/LogerClient.log"); 
+            File ff=new File("ADPoker/loger/Loger"+nom+".log"); 
             ff.createNewFile();
             FileWriter ffw=new FileWriter(ff);
             ffw.write("****** ");  
@@ -105,9 +105,10 @@ public class MainClient implements Serializable {
             
             ffw.write("Client déclaré au serveur\n");
             joueurLocal.ecoute();
-            ffw.write(nom + " a attendu 60s | lancement de la numerotation\n");
+            ffw.write("lancement de la numerotation\n");
             ffw.close(); 
         }catch(IOException | NotBoundException | InterruptedException exx){
+            System.err.println("Probleme de logger");
         }
     }
 
