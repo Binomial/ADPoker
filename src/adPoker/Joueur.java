@@ -2,12 +2,12 @@ package adPoker;
 
 import java.io.Serializable;
 
-public class Adversaire implements Serializable{
+public class Joueur implements Serializable{
 
     private String nom;
     private int id;
 
-    public Adversaire(String nom) {
+    public Joueur(String nom) {
         this.nom = nom;
         this.id = -1;
     }

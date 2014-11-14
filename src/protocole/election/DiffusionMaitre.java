@@ -1,20 +1,20 @@
 package protocole.election;
 
-import adPoker.Adversaire;
+import adPoker.Joueur;
 import protocole.PokerMessage;
 import protocole.TypeMessage;
 
 
 public class DiffusionMaitre extends PokerMessage{
 
-    private Adversaire maitre;
+    private Joueur maitre;
     
     public DiffusionMaitre(String nom) {
         super(TypeMessage.DIFFUSION_MAITRE);
-        maitre = new Adversaire(nom);
+        maitre = new Joueur(nom);
     }
 
-    public Adversaire getMaitre() {
+    public Joueur getMaitre() {
         return maitre;
     }
 }

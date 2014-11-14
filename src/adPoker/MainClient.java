@@ -13,18 +13,18 @@ import protocole.connection.DiffusionConnectionPokerMessage;
 import protocole.numerotation.DiffusionDebutNumerotationPokerMessage;
 import reso.IReso;
 
-public class Joueur implements Serializable {
+public class MainClient implements Serializable {
     private static final long serialVersionUID = -3879530234484702429L;
 
     private final String nom;
     private int id;
     private List<Carte> mainCarte;
-    private List<Adversaire> adversaires;
+    private List<Joueur> adversaires;
     private IReso reso;
     private Client client;
     private int nbFinNumerotation;
 
-    public Joueur(String nom) throws RemoteException, NotBoundException, MalformedURLException {
+    public MainClient(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         this.nom = nom;
         client = new Client(nom);
         nbFinNumerotation = 0;
@@ -54,7 +54,7 @@ public class Joueur implements Serializable {
         this.mainCarte = mainCarte;
     }
 
-    public List<Adversaire> getAdversaires() {
+    public List<Joueur> getAdversaires() {
         return adversaires;
     }
 
@@ -89,16 +89,11 @@ public class Joueur implements Serializable {
 
         try {
             String nom = args[0];
-            Joueur joueurLocal = new Joueur(nom);            
+            MainClient joueurLocal = new MainClient(nom);            
             joueurLocal.connection("localhost", IReso.PORT);
             joueurLocal.ecoute();
 
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-        } catch (NotBoundException | InterruptedException ex) {
-            //Logger.getLogger(Joueur.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("ERROR2");
-        } catch(Exception exx){
+        }catch(Exception exx){
             exx.printStackTrace();
         }
     }
