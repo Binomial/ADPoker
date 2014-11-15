@@ -105,7 +105,6 @@ public class MainClient implements Serializable {
             
             ffw.write("Client déclaré au serveur\n");
             joueurLocal.ecoute();
-            ffw.write("lancement de la numerotation\n");
             ffw.close(); 
         }catch(IOException | NotBoundException | InterruptedException exx){
             System.err.println("Probleme de logger");
