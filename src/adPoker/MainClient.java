@@ -66,7 +66,7 @@ public class MainClient implements Serializable {
         this.reso = reso;
     }
 
-    public void connection(String ip, int port) throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
+    public void connection() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         setReso((IReso) Naming.lookup(IReso.NAME));
         reso.declareClient(this.nom, client);
         DiffusionConnectionPokerMessage msg2 = new DiffusionConnectionPokerMessage(nom);
@@ -90,7 +90,7 @@ public class MainClient implements Serializable {
         try {
             String nom = args[0];
             MainClient joueurLocal = new MainClient(nom);            
-            joueurLocal.connection("localhost", IReso.PORT);
+            joueurLocal.connection();
             joueurLocal.ecoute();
 
         }catch(Exception exx){

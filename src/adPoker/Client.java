@@ -23,11 +23,14 @@ import protocole.PokerMessage;
 import protocole.affiche.AfficheCartePokerMessage;
 import protocole.connection.ReponseConnectionPokerMessage;
 import protocole.distribution.DistributionPokerMessage;
+import protocole.distribution.FinDistributionOkPokerMessage;
+import protocole.distribution.FinDistributionPokerMessage;
 import protocole.echange.EchangePokerMessage;
 import protocole.echange.InitEchangePokerMessage;
 import protocole.echange.ReponseEchangePokerMessage;
 import protocole.echange.ReponseMaitrePokerMessage;
 import protocole.echange.TypeEchange;
+import protocole.finPartie.DiffusionFinPartiePokerMessage;
 import protocole.numerotation.ReponseNumerotationPokerMessage;
 import protocole.numerotation.TypeReponseNumerotation;
 import reso.IClient;
@@ -51,10 +54,14 @@ public class Client extends UnicastRemoteObject implements IClient {
     //election
     private int numeroPlusFort;
     private Joueur maitre;
+    //distribution
+    private int nbDistribOk;
     //echange
     private int nbCarteAChanger;
     private int nbTour;
-    public static final int NB_TOUR_MAX = 3;
+    public static final int NB_TOUR_MAX = 1;
+    //fin
+    private int nbFinOk;
 
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         super();
@@ -67,7 +74,9 @@ public class Client extends UnicastRemoteObject implements IClient {
         id = -1;
         numerotationOk = 0;
         numerotationTerminee = 0;
+        nbDistribOk = 0;
         nbTour = 0;
+        nbFinOk = 0;
     }
 
     List<Joueur> getAdversaires() {
@@ -263,9 +272,6 @@ public class Client extends UnicastRemoteObject implements IClient {
                         }
                     }
                 }
-                System.out.println("Envoi du message d'init echange");
-                reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
-                System.out.println("FIN Envoi du message d'init echange");
 
                 break;
             case DIFFUSION_MAITRE:
@@ -274,22 +280,41 @@ public class Client extends UnicastRemoteObject implements IClient {
                 System.out.println("maitre : " + msgMaitre_temp.getMaitre().getNom());
                 break;
 
-             case MESSAGE_DISTRIBUTION:
+            case MESSAGE_DISTRIBUTION:
                 DistributionPokerMessage msgDistribution_temp = (DistributionPokerMessage) pm;
                 cartes.add(msgDistribution_temp.getCarte());
                 System.out.println(msgDistribution_temp.getCarte());
+                System.out.println("                                             distrib carte size : " + cartes.size());
                 if (cartes.size() == 5) {
                     System.out.println("Cartes recus, on attend notr tour pour echanger");
-
-                    if (from.compareTo(nom) == 0) {
-                        System.out.println("Envoi du message d'init echange");
-                        reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
-                        System.out.println("FIN Envoi du message d'init echange");
-
+                    if (nom.compareTo(maitre.getNom()) == 0) {
+                        reso.broadcastMessage(nom, new FinDistributionPokerMessage());
                     }
                 }
 
                 break;
+
+            case DIFFUSION_FIN_DISTRIBUTION:
+                System.out.println("reception DIFFUSION_FIN_DISTRIBUTION");
+                reso.sendMessage(nom, maitre.getNom(), new FinDistributionOkPokerMessage());
+                break;
+            case MESSAGE_FIN_OK_DISTRIBUTION:
+                nbDistribOk++;
+                System.out.println("                                                               nb distribok " + nbDistribOk);
+                if (nbDistribOk == listJoueurs.size()) {
+                    System.out.println("Envoi du message d'init echange");
+                    reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
+                    System.out.println("FIN Envoi du message d'init echange");
+
+                }
+            /*
+             case distribFin:
+             if(carte.size == 5)
+             send distribFInOK
+                
+             case distribFinOk == size joueurs
+             send InitEchangePokerMEssage
+             */
 
             case REPONSE_AU_MAITRE:
                 ReponseMaitrePokerMessage msgReponseMaitre_temp = (ReponseMaitrePokerMessage) pm;
@@ -302,8 +327,8 @@ public class Client extends UnicastRemoteObject implements IClient {
                 break;
 
             case MESSAGE_ECHANGE:
+                System.out.println("                                             carte size : " + cartes.size());
                 EchangePokerMessage msgEchange_temp = (EchangePokerMessage) pm;
-                System.out.println("ordinal message" + msgEchange_temp.getTypeEchange() + " ordinal enum" + TypeEchange.ECHANGE);
                 if (msgEchange_temp.getTypeEchange().ordinal() == TypeEchange.ECHANGE.ordinal()) {
                     System.out.println("ECHANGE");
                     ReponseEchangePokerMessage msg_EchangeCarte = (ReponseEchangePokerMessage) msgEchange_temp;
@@ -316,7 +341,6 @@ public class Client extends UnicastRemoteObject implements IClient {
                 }
                 if (nbCarteAChanger > 0) {
                     ReponseMaitrePokerMessage reponseEchange = new ReponseMaitrePokerMessage(cartes.remove(0));
-                    System.out.println("Nom du maitre : " + maitre.getNom());
                     reso.sendMessage(nom, maitre.getNom(), reponseEchange);
                     nbCarteAChanger--;
                     System.out.println("Carte a echangee : " + nbCarteAChanger + "j'envoie : " + reponseEchange.getCarte());
@@ -324,11 +348,11 @@ public class Client extends UnicastRemoteObject implements IClient {
                     System.out.println("passage de jeton a " + adversaireSuivant.getNom());
                     if (nom.compareTo(maitre.getNom()) == 0) {
                         nbTour++;
-                        if (nbTour == NB_TOUR_MAX) {
-                            System.out.println("Fin des echanges");
+                        if (nbTour >= NB_TOUR_MAX) {
+                            System.err.println("Fin des echanges");
                             reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
                         } else {
-                            System.out.println("Fin du tour " + nbTour);
+                            System.err.println("FIN DU TOUR" + nbTour);
                             reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
                         }
 
@@ -339,17 +363,26 @@ public class Client extends UnicastRemoteObject implements IClient {
 
                 break;
             case MESSAGE_AFFICHE:
-                System.out.println(nom + ":" + cartes.remove(0));
-                if (nom.compareTo(maitre.getNom()) == 0) {
+                if (nbFinOk <= listJoueurs.size() - 1) {
+                    System.out.println(nom + ":" + cartes.remove(0));
 
-                }
-                if (cartes.isEmpty()) {
-                    System.out.println("FIN DE LA PARTIE");
-                    //exit
-                } else {
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
+                    if (cartes.isEmpty()) {
+                        System.out.println("Demande de fin de partie");
+                        reso.broadcastMessage(nom, new DiffusionFinPartiePokerMessage());
+                        reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
+                    } else {
+                        reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
+                    }
                 }
 
+                break;
+            case DIFFUSION_FIN_PARTIE:
+                nbFinOk++;
+                System.out.println("nb fin ok " + nbFinOk + "/" + listJoueurs.size());
+                if (nbFinOk == listJoueurs.size()) {
+                    //reso.removeClient(nom);
+                    //System.exit(0);
+                }
                 break;
 
         }
