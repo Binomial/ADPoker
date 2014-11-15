@@ -76,7 +76,7 @@ public class Client extends UnicastRemoteObject implements IClient {
         nbTour = 0;
         
        try {
-            this.loger = new File("ADPoker/loger/log"+nom+"Msg.log");
+            this.loger = new File("loger/ReceptionMessages/log_"+nom+".log");
             this.loger.createNewFile();
             this.ffw = new FileWriter(loger);
             
@@ -138,6 +138,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                     
                     ffw.write("****************\n");
                     ffw.write("Message de connexion d'un joueur\n");
+                    
                      //la minute n'est pas ecoulee
                     if (enEcoute) {
                         ReponseConnectionPokerMessage msg2 = new ReponseConnectionPokerMessage(nom);
@@ -161,6 +162,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     
                     // On recoit le lancement de la numerotation
                 case DIFFUSION_NUMEROTATION:
+                    ffw.write("****************\n");
+                    ffw.write("Préparation et lancement de la numérotation\n");
+                    
                     enEcoute = false;
                     if (id == -1) {
                         for (Joueur joueur : listJoueurs) {//Affiche la liste des joueurs
@@ -184,6 +188,8 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case MESSAGE_NUMEROTATION:
+                    ffw.write("****************\n");
+                    ffw.write("Traitement de la numérotation\n");
                     
                     DiffusionNumerotationPokerMessage msgNumerotation_temp = (DiffusionNumerotationPokerMessage) pm;
                     if ((msgNumerotation_temp.getNomSender().compareTo(nom) != 0)) { //|| (msgNumerotation_temp.getEcouterSonBroadcast())
@@ -201,6 +207,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case REPONSE_NUMEROTATION:
+                    ffw.write("****************\n");
+                    ffw.write("Traitement de la réponse de numérotation de " + from + "\n");
+                    
                     ReponseNumerotationPokerMessage msgReponseNumerotation_temp = (ReponseNumerotationPokerMessage) pm;
                     if (msgReponseNumerotation_temp.getReponse() == TypeReponseNumerotation.CONFLIT) {
                         id = alea(0, listJoueurs.size() - 1);
@@ -226,6 +235,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     
                     // Un joueur a repondu suite a l'envoie de notre broadcast
                 case REPONSE_CONNECTION:
+                    ffw.write("****************\n");
+                    ffw.write(from + "nous a accepté\n");
+                    
                     if (!existeJoueur(from)) {
                         listJoueurs.add(new Joueur(from));
                         ReponseConnectionPokerMessage msg_temp2 = (ReponseConnectionPokerMessage) msg;
@@ -234,6 +246,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case DIFFUSION_EJECTION:
+                    ffw.write("****************\n");
+                    ffw.write("On est éjecté\n");
+                    
                     System.out.println("Vous arriver trop tard,\nLa partie a deja commence");
                     try {
                         Thread.sleep(10000);
@@ -243,6 +258,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     }
                     break;
                 case DIFFUSION_FIN_NUMEROTATION:
+                    ffw.write("****************\n");
+                    ffw.write("Message de connexion d'un joueur\n");
+                    
                     DiffusionFinNumerotationPokerMessage msgFinNumerotation_temp = (DiffusionFinNumerotationPokerMessage) pm;
                     numerotationTerminee++;
                     for (Joueur adv : listJoueurs) {
@@ -271,6 +289,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case MESSAGE_ELECTION:
+                    ffw.write("****************\n");
+                    ffw.write("Début de l'élection\n");
+                    
                     ElectionPokerMessage msgElection_temp = (ElectionPokerMessage) pm;
                     System.out.println("numLePlusFort : " + numeroPlusFort + "idRecu" + msgElection_temp.getNumeroPlusFort());
                     if (msgElection_temp.getNumeroPlusFort() > numeroPlusFort) {
@@ -296,12 +317,18 @@ public class Client extends UnicastRemoteObject implements IClient {
                     
                     break;
                 case DIFFUSION_MAITRE:
+                    ffw.write("****************\n");
+                    ffw.write("Réception du résultat de l'élection\n");
+                    
                     DiffusionMaitre msgMaitre_temp = (DiffusionMaitre) pm;
                     maitre = msgMaitre_temp.getMaitre();
                     System.out.println("maitre : " + msgMaitre_temp.getMaitre().getNom());
                     break;
                     
                 case MESSAGE_DISTRIBUTION:
+                    ffw.write("****************\n");
+                    ffw.write("Réception des cartes\n");
+                    
                     DistributionPokerMessage msgDistribution_temp = (DistributionPokerMessage) pm;
                     cartes.add(msgDistribution_temp.getCarte());
                     System.out.println(msgDistribution_temp.getCarte());
@@ -319,6 +346,9 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case REPONSE_AU_MAITRE:
+                    ffw.write("****************\n");
+                    ffw.write(from + "veut échanger des cartes\n");
+                    
                     ReponseMaitrePokerMessage msgReponseMaitre_temp = (ReponseMaitrePokerMessage) pm;
                     System.out.println("Carte recu de l echange : " + msgReponseMaitre_temp.getCarte());
                     jeu.ajoutCarte(msgReponseMaitre_temp.getCarte());
@@ -329,6 +359,8 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
                 case MESSAGE_ECHANGE:
+                    ffw.write("****************\n");
+                                        
                     EchangePokerMessage msgEchange_temp = (EchangePokerMessage) pm;
                     System.out.println("ordinal message" + msgEchange_temp.getTypeEchange() + " ordinal enum" + TypeEchange.ECHANGE);
                     if (msgEchange_temp.getTypeEchange().ordinal() == TypeEchange.ECHANGE.ordinal()) {
@@ -336,18 +368,22 @@ public class Client extends UnicastRemoteObject implements IClient {
                         ReponseEchangePokerMessage msg_EchangeCarte = (ReponseEchangePokerMessage) msgEchange_temp;
                         cartes.add(msg_EchangeCarte.getCarte());
                         System.out.println("Nouvelle carte : " + msg_EchangeCarte.getCarte());
+                        ffw.write("On  a reçut un " + msg_EchangeCarte.getCarte() + "\n");
                     } else {
+                        ffw.write("Initialisation de l'échange\n");
                         System.out.println("INIT");
                         nbCarteAChanger = alea(2, 5);
-                        System.out.println("Carte a echangee : " + nbCarteAChanger);
+                        System.out.println("Carte a echanger : " + nbCarteAChanger);
                     }
                     if (nbCarteAChanger > 0) {
+                        ffw.write("POn veut échanger "+ nbCarteAChanger + " cartes\n");
                         ReponseMaitrePokerMessage reponseEchange = new ReponseMaitrePokerMessage(cartes.remove(0));
                         System.out.println("Nom du maitre : " + maitre.getNom());
                         reso.sendMessage(nom, maitre.getNom(), reponseEchange);
                         nbCarteAChanger--;
-                        System.out.println("Carte a echangee : " + nbCarteAChanger + "j'envoie : " + reponseEchange.getCarte());
+                        System.out.println("Carte a echangee : " + nbCarteAChanger + " j'envoie : " + reponseEchange.getCarte());
                     } else {
+                        ffw.write("Fin de l'échange, on passe le jeton à " + adversaireSuivant.getNom() + "\n");
                         System.out.println("passage de jeton a " + adversaireSuivant.getNom());
                         if (nom.compareTo(maitre.getNom()) == 0) {
                             nbTour++;
@@ -366,6 +402,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                     
                     break;
                 case MESSAGE_AFFICHE:
+                    ffw.write("On affiche une carte\n");
                     System.out.println(nom + ":" + cartes.remove(0));
                     if (nom.compareTo(maitre.getNom()) == 0) {
                         
@@ -380,7 +417,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                     break;
                     
             }
-            
+            ffw.flush();
             //}
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

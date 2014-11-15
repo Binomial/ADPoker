@@ -92,7 +92,7 @@ public class MainClient implements Serializable {
         try {
             String nom = args[0];
             
-            File ff=new File("ADPoker/loger/Loger"+nom+".log"); 
+            File ff=new File("loger/MainClient/loger_"+nom+".log"); 
             ff.createNewFile();
             FileWriter ffw=new FileWriter(ff);
             ffw.write("****** ");  

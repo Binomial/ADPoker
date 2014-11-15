@@ -1,0 +1,110 @@
+****************
+Message de connexion d'un joueur
+j1 a rejoint la partie
+on répond avec ReponsePokerMessage | j1
+****************
+Message de connexion d'un joueur
+j2 a rejoint la partie
+on répond avec ReponsePokerMessage | j1
+****************
+j1nous a accepté
+****************
+Message de connexion d'un joueur
+j3 a rejoint la partie
+on répond avec ReponsePokerMessage | j1
+****************
+Préparation et lancement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Traitement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Traitement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Message de connexion d'un joueur
+****************
+Traitement de la numérotation
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Traitement de la numérotation
+****************
+Traitement de la réponse de numérotation de j1
+****************
+Message de connexion d'un joueur
+****************
+Traitement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Traitement de la numérotation
+****************
+Message de connexion d'un joueur
+****************
+Début de l'élection
+****************
+Début de l'élection
+****************
+Initialisation de l'échange
+POn veut échanger 2 cartes
+****************
+Début de l'élection
+****************
+Réception des cartes
+****************
+Réception des cartes
+****************
+Initialisation de l'échange
+POn veut échanger 4 cartes
+****************
+Initialisation de l'échange
+POn veut échanger 2 cartes
+****************
+Réception du résultat de l'élection
+****************
+Réception des cartes
+****************
+Réception des cartes
+****************
+Réception des cartes
+****************
+Initialisation de l'échange
+POn veut échanger 3 cartes
+****************
+On  a reçut un Dame : Pique
+POn veut échanger 2 cartes
+****************
+On  a reçut un As : Carreau
+POn veut échanger 1 cartes
+****************
+On  a reçut un 10 : Pique
+Fin de l'échange, on passe le jeton à j3
+****************
+Initialisation de l'échange
+POn veut échanger 4 cartes
+****************
+On  a reçut un 6 : Pique
+POn veut échanger 3 cartes
+****************
+On  a reçut un 3 : Carreau
+POn veut échanger 2 cartes
+****************
+On  a reçut un 6 : Coeur
+POn veut échanger 1 cartes
+****************
+On  a reçut un Valet : Trefle
+Fin de l'échange, on passe le jeton à j3
