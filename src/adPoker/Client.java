@@ -380,7 +380,7 @@ public class Client extends UnicastRemoteObject implements IClient {
                 nbFinOk++;
                 System.out.println("nb fin ok " + nbFinOk + "/" + listJoueurs.size());
                 if (nbFinOk == listJoueurs.size()) {
-                    //reso.removeClient(nom);
+                    reso.removeClient(nom);
                     //System.exit(0);
                 }
                 break;
