@@ -25,6 +25,7 @@ public class ADLogger {
         try {
             loggerWriter.write(nomMessage + " : (" + from + " | " + parametre + ")\n");
             loggerWriter.flush();
+            System.out.println(nomMessage + " : (" + from + " | " + parametre + ")\n");
         } catch (IOException ex) {
             Logger.getLogger(ADLogger.class.getName()).log(Level.SEVERE, null, ex);
         }
