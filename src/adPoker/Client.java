@@ -13,26 +13,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jeuCarte.Carte;
 import jeuCarte.JeuCartes;
-import protocole.numerotation.DiffusionDebutNumerotationPokerMessage;
-import protocole.numerotation.DiffusionFinNumerotationPokerMessage;
-import protocole.election.DiffusionMaitre;
-import protocole.numerotation.DiffusionNumerotationPokerMessage;
-import protocole.connection.EjectionPokerMessage;
-import protocole.election.ElectionPokerMessage;
-import protocole.PokerMessage;
-import protocole.affiche.AfficheCartePokerMessage;
-import protocole.connection.ReponseConnectionPokerMessage;
-import protocole.distribution.DistributionPokerMessage;
-import protocole.distribution.FinDistributionOkPokerMessage;
-import protocole.distribution.FinDistributionPokerMessage;
-import protocole.echange.EchangePokerMessage;
-import protocole.echange.InitEchangePokerMessage;
-import protocole.echange.ReponseEchangePokerMessage;
-import protocole.echange.ReponseMaitrePokerMessage;
-import protocole.echange.TypeEchange;
-import protocole.finPartie.DiffusionFinPartiePokerMessage;
-import protocole.numerotation.ReponseNumerotationPokerMessage;
-import protocole.numerotation.TypeReponseNumerotation;
+import protocole.*;
+import protocole.affiche.*;
+import protocole.connection.*;
+import protocole.distribution.*;
+import protocole.echange.*;
+import protocole.election.*;
+import protocole.finPartie.*;
+import protocole.numerotation.*;
+
 import reso.IClient;
 import reso.IReso;
 
@@ -83,19 +72,139 @@ public class Client extends UnicastRemoteObject implements IClient {
         return listJoueurs;
     }
 
-    void setEnEcoute(boolean enEcoute) {
+    public void setEnEcoute(boolean enEcoute) {
         this.enEcoute = enEcoute;
     }
 
-    boolean getEnEcoute() {
+    public boolean isEnEcoute() {
         return enEcoute;
     }
 
-    int getId() {
+    public IReso getReso() {
+        return reso;
+    }
+
+    public void setReso(IReso reso) {
+        this.reso = reso;
+    }
+
+    public boolean isEjection() {
+        return ejection;
+    }
+
+    public void setEjection(boolean ejection) {
+        this.ejection = ejection;
+    }
+
+    public List<Joueur> getListJoueurs() {
+        return listJoueurs;
+    }
+
+    public void setListJoueurs(List<Joueur> listJoueurs) {
+        this.listJoueurs = listJoueurs;
+    }
+
+    public List<Carte> getCartes() {
+        return cartes;
+    }
+
+    public void setCartes(List<Carte> cartes) {
+        this.cartes = cartes;
+    }
+
+    public JeuCartes getJeu() {
+        return jeu;
+    }
+
+    public void setJeu(JeuCartes jeu) {
+        this.jeu = jeu;
+    }
+
+    public int getNumerotationOk() {
+        return numerotationOk;
+    }
+
+    public void setNumerotationOk(int numerotationOk) {
+        this.numerotationOk = numerotationOk;
+    }
+
+    public int getNumerotationTerminee() {
+        return numerotationTerminee;
+    }
+
+    public void setNumerotationTerminee(int numerotationTerminee) {
+        this.numerotationTerminee = numerotationTerminee;
+    }
+
+    public int getNbConflit() {
+        return nbConflit;
+    }
+
+    public void setNbConflit(int nbConflit) {
+        this.nbConflit = nbConflit;
+    }
+
+    public Joueur getAdversaireSuivant() {
+        return adversaireSuivant;
+    }
+
+    public void setAdversaireSuivant(Joueur adversaireSuivant) {
+        this.adversaireSuivant = adversaireSuivant;
+    }
+
+    public int getNumeroPlusFort() {
+        return numeroPlusFort;
+    }
+
+    public void setNumeroPlusFort(int numeroPlusFort) {
+        this.numeroPlusFort = numeroPlusFort;
+    }
+
+    public Joueur getMaitre() {
+        return maitre;
+    }
+
+    public void setMaitre(Joueur maitre) {
+        this.maitre = maitre;
+    }
+
+    public int getNbDistribOk() {
+        return nbDistribOk;
+    }
+
+    public void setNbDistribOk(int nbDistribOk) {
+        this.nbDistribOk = nbDistribOk;
+    }
+
+    public int getNbCarteAChanger() {
+        return nbCarteAChanger;
+    }
+
+    public void setNbCarteAChanger(int nbCarteAChanger) {
+        this.nbCarteAChanger = nbCarteAChanger;
+    }
+
+    public int getNbTour() {
+        return nbTour;
+    }
+
+    public void setNbTour(int nbTour) {
+        this.nbTour = nbTour;
+    }
+
+    public int getNbFinOk() {
+        return nbFinOk;
+    }
+
+    public void setNbFinOk(int nbFinOk) {
+        this.nbFinOk = nbFinOk;
+    }
+
+    public int getId() {
         return this.id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -104,13 +213,13 @@ public class Client extends UnicastRemoteObject implements IClient {
     }
 
     // Retourne un nombre al?atoire de 0 au nombre d'aversaires
-    int alea(int min, int max) {
+    public static int alea(int min, int max) {
         Random rand = new Random();
         // return rand.nextInt(adversaires.size() - 0 + 1) + 0;
         return rand.nextInt(max - min + 1) + min;
     }
 
-    private boolean existeJoueur(String nomJoueur) {
+    public boolean existeJoueur(String nomJoueur) {
         for (Joueur joueur : listJoueurs) {
             if (joueur.getNom().compareTo(nomJoueur) == 0) {
                 return true;
@@ -124,268 +233,85 @@ public class Client extends UnicastRemoteObject implements IClient {
         PokerMessage pm = ((PokerMessage) msg);
         // Le message ne vient pas de nous
         // if (!from.equals(nom)) {
-        switch (pm.getType()) {
-            // Un nouveau joueur nous envoie son nom
-            case DIFFUSION_CONNECTION:
-                // la minute n'est pas ecoulee
-                if (enEcoute) {
-                    ReponseConnectionPokerMessage msg2 = new ReponseConnectionPokerMessage(nom);
-                    if (!existeJoueur(from)) {
-                        listJoueurs.add(new Joueur(from));
-                    }
-                    reso.sendMessage(nom, from, msg2);
-                    System.out.println(from + " a rejoint la partie");
-                } else {
-                    // la minute est ecoulee, on ejecte le joueur
-                    reso.sendMessage(nom, from, new EjectionPokerMessage());
-                }
-                break;
-
-            // On recoit le lancement de la numerotation
-            case DIFFUSION_NUMEROTATION:
-                enEcoute = false;
-                if (id == -1) {
-                    for (Joueur joueur : listJoueurs) {//Affiche la liste des joueurs
-                        System.out.println("!!!" + joueur.getNom());
-                    }
-                    DiffusionDebutNumerotationPokerMessage msg_temp = (DiffusionDebutNumerotationPokerMessage) pm;
-                    if (listJoueurs.size() != msg_temp.getNbAdversaire()) {
-                        System.out.println("Mise a jour de la liste des adversaires");
-                        listJoueurs = msg_temp.getJoueursList();
-                        System.out.println("MAJ ok");
-                    }
-                    nbConflit = listJoueurs.size() - 1;
-                    System.out.println(from + " On commence la numerotation");
-
-                    id = alea(0, listJoueurs.size() - 1);
-                    System.out.println("Mon Id : " + id);
-                    System.out.println("Mon Nom : " + nom);
-                    DiffusionNumerotationPokerMessage numerotationMsg = new DiffusionNumerotationPokerMessage(id, nom, true);
-                    reso.broadcastMessage(from, numerotationMsg);
-                }
-                break;
-
-            case MESSAGE_NUMEROTATION:
-
-                DiffusionNumerotationPokerMessage msgNumerotation_temp = (DiffusionNumerotationPokerMessage) pm;
-                if ((msgNumerotation_temp.getNomSender().compareTo(nom) != 0)) { //|| (msgNumerotation_temp.getEcouterSonBroadcast())
-                    ReponseNumerotationPokerMessage reponseNumerotationMsg;
-                    if (id == msgNumerotation_temp.getNumero()) {
-                        reponseNumerotationMsg = new ReponseNumerotationPokerMessage(TypeReponseNumerotation.CONFLIT);
-                        System.err.println("CONFLIT sur le numero moi :" + id + "lui:" + msgNumerotation_temp.getNumero() + "avec le joueur : " + msgNumerotation_temp.getNomSender());
-                    } else {
-                        reponseNumerotationMsg = new ReponseNumerotationPokerMessage(TypeReponseNumerotation.OK);
-                        System.out.println("Numero OK");
-                    }
-                    reso.sendMessage(from, msgNumerotation_temp.getNomSender(), reponseNumerotationMsg);
-                }
-
-                break;
-
-            case REPONSE_NUMEROTATION:
-                ReponseNumerotationPokerMessage msgReponseNumerotation_temp = (ReponseNumerotationPokerMessage) pm;
-                if (msgReponseNumerotation_temp.getReponse() == TypeReponseNumerotation.CONFLIT) {
-                    id = alea(0, listJoueurs.size() - 1);
-                    System.out.println("Mon nouvel Id : " + id);
-                    DiffusionNumerotationPokerMessage newNumerotationMsg = new DiffusionNumerotationPokerMessage(id, nom, false);
-                    reso.broadcastMessage(from, newNumerotationMsg);
-                    nbConflit = nbConflit + (listJoueurs.size() - 2);
-                } else if (msgReponseNumerotation_temp.getReponse() == TypeReponseNumerotation.OK) {
-                    numerotationOk++;
-                    if (numerotationOk == nbConflit) {
-                        System.out.println("Numerotation finie" + (numerotationOk) + "/" + nbConflit);
-                        reso.broadcastMessage(nom, new DiffusionFinNumerotationPokerMessage(id));
-                    } else {
-                        System.out.println("Numerotation pas finie" + (numerotationOk) + "/" + nbConflit);
-                    }
-
-                }
-
-                break;
-
-            case DIFFUSION_DEBUT_JEU:
-                break;
-
-            // Un joueur a repondu suite a l'envoie de notre broadcast
-            case REPONSE_CONNECTION:
-                if (!existeJoueur(from)) {
-                    listJoueurs.add(new Joueur(from));
-                    ReponseConnectionPokerMessage msg_temp2 = (ReponseConnectionPokerMessage) msg;
-                    System.out.println(msg_temp2.getNom() + " nous a accepte");
-                }
-                break;
-
-            case DIFFUSION_EJECTION:
-                System.out.println("Vous arriver trop tard,\nLa partie a deja commence");
-                try {
-                    Thread.sleep(10000);
-                    //System.exit(0);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
-            case DIFFUSION_FIN_NUMEROTATION:
-                DiffusionFinNumerotationPokerMessage msgFinNumerotation_temp = (DiffusionFinNumerotationPokerMessage) pm;
-                numerotationTerminee++;
-                for (Joueur adv : listJoueurs) {
-                    if (adv.getNom().compareTo(from) == 0) {
-                        System.out.println(adv.getNom() + "=>" + msgFinNumerotation_temp.getId());
-                        adv.setId(msgFinNumerotation_temp.getId()); //attributuion de l'ID
-                    }
-                }
-                for (Joueur adv : listJoueurs) {
-                    if ((id + 1) % listJoueurs.size() == adv.getId()) {
-                        adversaireSuivant = adv;//cr?ation de l'anneau
-                    }
-                }
-                if (numerotationTerminee == listJoueurs.size()) {
-
-                    System.out.println("::Numerotation Terminee !!!:::" + numerotationTerminee);
-                    System.out.println("Pr?t pour l'election, mon adv suivant est" + adversaireSuivant.getNom());
-                    ElectionPokerMessage message = new ElectionPokerMessage(id, id);
-                    numeroPlusFort = id;
-                    System.out.println("DEBUT ELECTION");
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), message);
-
-                } else {
-                    System.out.println("::Numerotation PAS Terminee !!!:::" + numerotationTerminee);
-                }
-                break;
-
-            case MESSAGE_ELECTION:
-                ElectionPokerMessage msgElection_temp = (ElectionPokerMessage) pm;
-                System.out.println("numLePlusFort : " + numeroPlusFort + "idRecu" + msgElection_temp.getNumeroPlusFort());
-                if (msgElection_temp.getNumeroPlusFort() > numeroPlusFort) {
-                    numeroPlusFort = msgElection_temp.getNumeroPlusFort();
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(msgElection_temp.getId(), numeroPlusFort));
-                    System.out.println("numleplusfort : " + numeroPlusFort);
-                } else if (msgElection_temp.getNumeroPlusFort() < numeroPlusFort) {
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new ElectionPokerMessage(msgElection_temp.getId(), numeroPlusFort));
-                } else if (msgElection_temp.getNumeroPlusFort() == id && msgElection_temp.getId() == id) {
-                    System.out.println("broadcast maitre");
-                    jeu = new JeuCartes();
-                    reso.broadcastMessage(nom, new DiffusionMaitre(nom));
-                    for (int i = 0; i < 5; i++) {
-                        for (Joueur adve : listJoueurs) {
-                            DistributionPokerMessage distributionMessage = new DistributionPokerMessage(jeu.nvlleCarte());
-                            reso.sendMessage(nom, adve.getNom(), distributionMessage);
-                        }
-                    }
-                }
-
-                break;
-            case DIFFUSION_MAITRE:
-                DiffusionMaitre msgMaitre_temp = (DiffusionMaitre) pm;
-                maitre = msgMaitre_temp.getMaitre();
-                System.out.println("maitre : " + msgMaitre_temp.getMaitre().getNom());
-                break;
-
-            case MESSAGE_DISTRIBUTION:
-                DistributionPokerMessage msgDistribution_temp = (DistributionPokerMessage) pm;
-                cartes.add(msgDistribution_temp.getCarte());
-                System.out.println(msgDistribution_temp.getCarte());
-                System.out.println("                                             distrib carte size : " + cartes.size());
-                if (cartes.size() == 5) {
-                    System.out.println("Cartes recus, on attend notr tour pour echanger");
-                    if (nom.compareTo(maitre.getNom()) == 0) {
-                        reso.broadcastMessage(nom, new FinDistributionPokerMessage());
-                    }
-                }
-
-                break;
-
-            case DIFFUSION_FIN_DISTRIBUTION:
-                System.out.println("reception DIFFUSION_FIN_DISTRIBUTION");
-                reso.sendMessage(nom, maitre.getNom(), new FinDistributionOkPokerMessage());
-                break;
-            case MESSAGE_FIN_OK_DISTRIBUTION:
-                nbDistribOk++;
-                System.out.println("                                                               nb distribok " + nbDistribOk);
-                if (nbDistribOk == listJoueurs.size()) {
-                    System.out.println("Envoi du message d'init echange");
-                    reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
-                    System.out.println("FIN Envoi du message d'init echange");
-
-                }
-            /*
-             case distribFin:
-             if(carte.size == 5)
-             send distribFInOK
-                
-             case distribFinOk == size joueurs
-             send InitEchangePokerMEssage
-             */
-
-            case REPONSE_AU_MAITRE:
-                ReponseMaitrePokerMessage msgReponseMaitre_temp = (ReponseMaitrePokerMessage) pm;
-                System.out.println("Carte recu de l echange : " + msgReponseMaitre_temp.getCarte());
-                jeu.ajoutCarte(msgReponseMaitre_temp.getCarte());
-                Carte nouvelleCarte = jeu.nvlleCarte();
-                ReponseEchangePokerMessage msgKriss = new ReponseEchangePokerMessage(nouvelleCarte);
-                reso.sendMessage(nom, from, msgKriss);
-                System.out.println("Carte envoye " + nouvelleCarte);
-                break;
-
-            case MESSAGE_ECHANGE:
-                System.out.println("                                             carte size : " + cartes.size());
-                EchangePokerMessage msgEchange_temp = (EchangePokerMessage) pm;
-                if (msgEchange_temp.getTypeEchange().ordinal() == TypeEchange.ECHANGE.ordinal()) {
-                    System.out.println("ECHANGE");
-                    ReponseEchangePokerMessage msg_EchangeCarte = (ReponseEchangePokerMessage) msgEchange_temp;
-                    cartes.add(msg_EchangeCarte.getCarte());
-                    System.out.println("Nouvelle carte : " + msg_EchangeCarte.getCarte());
-                } else {
-                    System.out.println("INIT");
-                    nbCarteAChanger = alea(2, 5);
-                    System.out.println("Carte a echangee : " + nbCarteAChanger);
-                }
-                if (nbCarteAChanger > 0) {
-                    ReponseMaitrePokerMessage reponseEchange = new ReponseMaitrePokerMessage(cartes.remove(0));
-                    reso.sendMessage(nom, maitre.getNom(), reponseEchange);
-                    nbCarteAChanger--;
-                    System.out.println("Carte a echangee : " + nbCarteAChanger + "j'envoie : " + reponseEchange.getCarte());
-                } else {
-                    System.out.println("passage de jeton a " + adversaireSuivant.getNom());
-                    if (nom.compareTo(maitre.getNom()) == 0) {
-                        nbTour++;
-                        if (nbTour >= NB_TOUR_MAX) {
-                            System.err.println("Fin des echanges");
-                            reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
-                        } else {
-                            System.err.println("FIN DU TOUR" + nbTour);
-                            reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
-                        }
-
-                    } else {
-                        reso.sendMessage(nom, adversaireSuivant.getNom(), new InitEchangePokerMessage());
-                    }
-                }
-
-                break;
-            case MESSAGE_AFFICHE:
-                if (nbFinOk <= listJoueurs.size() - 1) {
-                    System.out.println(nom + ":" + cartes.remove(0));
-
-                    if (cartes.isEmpty()) {
-                        System.out.println("Demande de fin de partie");
-                        reso.broadcastMessage(nom, new DiffusionFinPartiePokerMessage());
-                        reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
-                    } else {
-                        reso.sendMessage(nom, adversaireSuivant.getNom(), new AfficheCartePokerMessage());
-                    }
-                }
-
-                break;
-            case DIFFUSION_FIN_PARTIE:
-                nbFinOk++;
-                System.out.println("nb fin ok " + nbFinOk + "/" + listJoueurs.size());
-                if (nbFinOk == listJoueurs.size()) {
-                    reso.removeClient(nom);
-                    //System.exit(0);
-                }
-                break;
-
-        }
+        pm.traitementMessage(this, from);
+//        switch (pm.getType()) {
+//            // Un nouveau joueur nous envoie son nom
+//            case DIFFUSION_CONNECTION:
+//                ((DiffusionConnectionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            // On recoit le lancement de la numerotation
+//            case DIFFUSION_NUMEROTATION:
+//                ((DiffusionDebutNumerotationPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case MESSAGE_NUMEROTATION:
+//                ((DiffusionNumerotationPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case REPONSE_NUMEROTATION:
+//                ((ReponseNumerotationPokerMessage) pm).traitementMessage(this, from);
+//
+//                break;
+//
+//            case DIFFUSION_DEBUT_JEU:
+//                ((DiffusionDebutJeuPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case REPONSE_CONNECTION:
+//                ((ReponseConnectionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case DIFFUSION_EJECTION:
+//                ((EjectionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case DIFFUSION_FIN_NUMEROTATION:
+//                ((DiffusionFinNumerotationPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case MESSAGE_ELECTION:
+//                ((ElectionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case DIFFUSION_MAITRE:
+//                ((DiffusionMaitre) pm).traitementMessage(this, from);
+//                break;
+//
+//            case MESSAGE_DISTRIBUTION:
+//                ((DistributionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case DIFFUSION_FIN_DISTRIBUTION:
+//                ((FinDistributionPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//            case MESSAGE_FIN_OK_DISTRIBUTION:
+//                ((FinDistributionOkPokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case REPONSE_AU_MAITRE:
+//                ((ReponseMaitrePokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case MESSAGE_ECHANGE:
+//                System.out.println("carte size : " + cartes.size());
+//                EchangePokerMessage msgEchange_temp = (EchangePokerMessage) pm;
+//                if (msgEchange_temp.getTypeEchange().ordinal() == TypeEchange.ECHANGE.ordinal()) {
+//                     ((ReponseEchangePokerMessage) pm).traitementMessage(this, from);
+//                } else {
+//                   ((InitEchangePokerMessage) pm).traitementMessage(this, from);
+//                }
+//                break;
+//                
+//            case MESSAGE_AFFICHE:
+//                ((AfficheCartePokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//            case DIFFUSION_FIN_PARTIE:
+//                ((DiffusionFinPartiePokerMessage) pm).traitementMessage(this, from);
+//                break;
+//
+//        }
 
         //}
     }

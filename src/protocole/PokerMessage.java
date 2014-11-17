@@ -1,8 +1,9 @@
 package protocole;
 
+import adPoker.Client;
 import java.io.Serializable;
 
-public abstract class PokerMessage implements Serializable{
+public abstract class PokerMessage implements Serializable, IMessage{
 
     private TypeMessage type;
 

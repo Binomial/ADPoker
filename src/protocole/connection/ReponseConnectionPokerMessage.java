@@ -1,11 +1,12 @@
 package protocole.connection;
 
+import adPoker.Client;
+import adPoker.Joueur;
 import java.io.Serializable;
 import protocole.PokerMessage;
 import protocole.TypeMessage;
 
 public class ReponseConnectionPokerMessage extends PokerMessage implements Serializable {
-
 
     private String nom;
 
@@ -16,6 +17,14 @@ public class ReponseConnectionPokerMessage extends PokerMessage implements Seria
 
     public String getNom() {
         return nom;
+    }
+
+    @Override
+    public void traitementMessage(Client cli, String from) {
+        if (!cli.existeJoueur(from)) {
+            cli.getListJoueurs().add(new Joueur(from));
+            System.out.println(getNom() + " nous a accepte");
+        }
     }
 
 }

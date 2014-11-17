@@ -1,5 +1,6 @@
 package protocole.connection;
 
+import adPoker.Client;
 import java.io.Serializable;
 import java.util.ArrayList;
 import protocole.PokerMessage;
@@ -23,5 +24,10 @@ public class DiffusionDebutJeuPokerMessage extends PokerMessage implements Seria
     public ArrayList<String> getJoueursList() {
         return joueursList;
     }   
+
+    @Override
+    public void traitementMessage(Client cli, String from) {
+        System.out.println("debut du jeu !");
+    }
     
 }
