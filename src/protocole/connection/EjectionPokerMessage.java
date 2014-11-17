@@ -18,7 +18,6 @@ public class EjectionPokerMessage extends PokerMessage {
 
     @Override
     public void traitementMessage(Client cli, String from) {
-        System.out.println("Vous arriver trop tard,\nLa partie a deja commence");
         try {
             Thread.sleep(10000);
             //System.exit(0);

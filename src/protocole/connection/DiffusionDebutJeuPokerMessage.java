@@ -27,7 +27,7 @@ public class DiffusionDebutJeuPokerMessage extends PokerMessage implements Seria
 
     @Override
     public void traitementMessage(Client cli, String from) {
-        System.out.println("debut du jeu !");
+        cli.getLogger().write("DiffusionDebutJeuPokerMessage", from, "Debut de la partie");
     }
     
 }

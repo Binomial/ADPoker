@@ -31,19 +31,20 @@ public class ElectionPokerMessage extends PokerMessage {
 
     @Override
     public void traitementMessage(Client cli, String from) {
-        System.out.println("OKKKKKKK");
         try {
             if (getNumeroPlusFort() > cli.getNumeroPlusFort()) {
+                cli.getLogger().write("ElectionPokerMessage", from, "mon ID : " + cli.getId() + " < numero Plus Fort : " + getNumeroPlusFort());
                 cli.setNumeroPlusFort(numeroPlusFort);
-                cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), new ElectionPokerMessage(getId(), cli.getNumeroPlusFort()));
-                System.out.println("numleplusfort : " + numeroPlusFort);
+                cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), new ElectionPokerMessage(getId(), cli.getNumeroPlusFort()));                
             } else if (getNumeroPlusFort() < cli.getNumeroPlusFort()) {
+                cli.getLogger().write("ElectionPokerMessage", from, "mon ID : " + cli.getId() + " > numero Plus Fort : " + getNumeroPlusFort());
                 cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), new ElectionPokerMessage(getId(), numeroPlusFort));
             } else if (getNumeroPlusFort() == cli.getId() && getId() == cli.getId()) {
-                System.out.println("broadcast maitre");
+                cli.getLogger().write("ElectionPokerMessage", from, "mon ID : " + cli.getId() + " == numero Plus Fort : " + getNumeroPlusFort() + "=> MAITRE");
                 cli.setJeu(new JeuCartes());
                 cli.getReso().broadcastMessage(cli.getNom(), new DiffusionMaitre(cli.getNom()));
                 for (int i = 0; i < 5; i++) {
+                    cli.getLogger().write("Distribution", from, "Tour : " + i + " / 5");
                     for (Joueur adve : cli.getListJoueurs()) {
                         DistributionPokerMessage distributionMessage = new DistributionPokerMessage(cli.getJeu().nvlleCarte());
                         cli.getReso().sendMessage(cli.getNom(), adve.getNom(), distributionMessage);

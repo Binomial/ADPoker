@@ -20,7 +20,7 @@ public class DiffusionMaitre extends PokerMessage {
 
     @Override
     public void traitementMessage(Client cli, String from) {
-        cli.setMaitre(maitre);        
-        System.out.println("maitre : " + cli.getMaitre().getNom());
+        cli.setMaitre(maitre);
+        cli.getLogger().write("DiffusionMaitre", from, "Election maitre : " + getMaitre().getNom());
     }
 }

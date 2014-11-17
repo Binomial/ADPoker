@@ -1,10 +1,6 @@
 package protocole.echange;
 
 import adPoker.Client;
-import static adPoker.Client.NB_TOUR_MAX;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import protocole.PokerMessage;
 import protocole.TypeMessage;
 import protocole.affiche.AfficheCartePokerMessage;
@@ -29,17 +25,16 @@ public abstract class EchangePokerMessage extends PokerMessage {
                 ReponseMaitrePokerMessage reponseEchange = new ReponseMaitrePokerMessage(cli.getCartes().remove(0));
                 cli.getReso().sendMessage(cli.getNom(), cli.getMaitre().getNom(), reponseEchange);
                 cli.setNbCarteAChanger(cli.getNbCarteAChanger() - 1);
-                System.out.println("Carte a echangee : " + cli.getNbCarteAChanger() + "j'envoie : " + reponseEchange.getCarte());
+                cli.getLogger().write("EchangePokerMessage", from, "Carte a echanger : " + cli.getNbCarteAChanger() + " | carte envoyee : " + reponseEchange.getCarte());
 
             } else {
-                System.out.println("passage de jeton a " + cli.getAdversaireSuivant().getNom());
+                cli.getLogger().write("EchangePokerMessage", from, "Passage de jeton a : " + cli.getAdversaireSuivant().getNom());
                 if (cli.getNom().compareTo(cli.getMaitre().getNom()) == 0) {
                     cli.setNbTour(cli.getNbTour() + 1);
+                    cli.getLogger().write("EchangePokerMessage", from, "Tour : "+cli.getNbTour()+"/"+Client.NB_TOUR_MAX);
                     if (cli.getNbTour() >= Client.NB_TOUR_MAX) {
-                        System.err.println("Fin des echanges");
                         cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), new AfficheCartePokerMessage());
                     } else {
-                        System.err.println("FIN DU TOUR" + cli.getNbTour());
                         cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), new InitEchangePokerMessage());
                     }
 

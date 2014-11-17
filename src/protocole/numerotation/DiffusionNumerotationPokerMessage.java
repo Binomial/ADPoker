@@ -1,9 +1,6 @@
 package protocole.numerotation;
 
 import adPoker.Client;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import protocole.PokerMessage;
 import protocole.TypeMessage;
 
@@ -39,10 +36,9 @@ public class DiffusionNumerotationPokerMessage extends PokerMessage {
                 ReponseNumerotationPokerMessage reponseNumerotationMsg;
                 if (cli.getId() == getNumero()) {
                     reponseNumerotationMsg = new ReponseNumerotationPokerMessage(TypeReponseNumerotation.CONFLIT);
-                    System.err.println("CONFLIT sur le numero moi :" + cli.getId() + "lui:" + getNumero() + "avec le joueur : " + getNomSender());
+                    cli.getLogger().write("DiffusionNumerotationPokerMessage", from, "Conflit ID : " + cli.getId() + " | " + getNomSender());
                 } else {
-                    reponseNumerotationMsg = new ReponseNumerotationPokerMessage(TypeReponseNumerotation.OK);
-                    System.out.println("Numero OK");
+                    reponseNumerotationMsg = new ReponseNumerotationPokerMessage(TypeReponseNumerotation.OK);                    
                 }
                 cli.getReso().sendMessage(cli.getNom(), getNomSender(), reponseNumerotationMsg);
             }

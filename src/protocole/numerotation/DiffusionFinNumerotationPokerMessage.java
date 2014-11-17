@@ -29,26 +29,25 @@ public class DiffusionFinNumerotationPokerMessage extends PokerMessage {
             cli.setNumerotationTerminee(cli.getNumerotationTerminee() + 1);
             for (Joueur adv : cli.getListJoueurs()) {
                 if (adv.getNom().compareTo(from) == 0) {
+                    cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Attribution definitive :  " + from + " <= " + cli.getId());
                     System.out.println(adv.getNom() + "=>" + getId());
                     adv.setId(this.getId()); //attributuion de l'ID
                 }
             }
             for (Joueur adv : cli.getListJoueurs()) {
                 if (((cli.getId() + 1) % cli.getListJoueurs().size()) == adv.getId()) {
-                    
                     cli.setAdversaireSuivant(adv);//creation de l anneau
+                    cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Mon adversaire suivant est " + cli.getAdversaireSuivant().getNom());
                 }
             }
             if (cli.getNumerotationTerminee() == cli.getListJoueurs().size()) {
-                System.out.println("::Numerotation Terminee !!!:::" + cli.getNumerotationTerminee());
-                System.out.println("Pr?t pour l'election, mon adv suivant est" + cli.getAdversaireSuivant().getNom());
+                cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Numerotation terminee");
                 ElectionPokerMessage message = new ElectionPokerMessage(id, id);
                 cli.setNumeroPlusFort(id);
-                System.out.println("DEBUT ELECTION");
+                cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Debut ELECTION");
                 cli.getReso().sendMessage(cli.getNom(), cli.getAdversaireSuivant().getNom(), message);
-                System.out.println("DEBUT ELECTION SEND");
             } else {
-                System.out.println("::Numerotation PAS Terminee !!!:::" + cli.getNumerotationTerminee());
+                cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Numerotation en cours");
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();

@@ -9,18 +9,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jeuCarte.Carte;
 import jeuCarte.JeuCartes;
 import protocole.*;
-import protocole.affiche.*;
-import protocole.connection.*;
-import protocole.distribution.*;
-import protocole.echange.*;
-import protocole.election.*;
-import protocole.finPartie.*;
-import protocole.numerotation.*;
 
 import reso.IClient;
 import reso.IReso;
@@ -51,6 +42,8 @@ public class Client extends UnicastRemoteObject implements IClient {
     public static final int NB_TOUR_MAX = 1;
     //fin
     private int nbFinOk;
+    
+    private ADLogger logger;
 
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
         super();
@@ -66,6 +59,8 @@ public class Client extends UnicastRemoteObject implements IClient {
         nbDistribOk = 0;
         nbTour = 0;
         nbFinOk = 0;
+        
+        logger = new ADLogger(nom);
     }
 
     List<Joueur> getAdversaires() {
@@ -78,6 +73,10 @@ public class Client extends UnicastRemoteObject implements IClient {
 
     public boolean isEnEcoute() {
         return enEcoute;
+    }
+
+    public ADLogger getLogger() {
+        return logger;
     }
 
     public IReso getReso() {

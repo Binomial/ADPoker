@@ -18,9 +18,8 @@ public class ReponseEchangePokerMessage extends EchangePokerMessage {
 
     @Override
     public void traitementMessage(Client cli, String from) {
-        System.out.println("ECHANGE");
         cli.getCartes().add(getCarte());
-        System.out.println("Nouvelle carte : " + getCarte());
+        cli.getLogger().write("ReponseEchangePokerMessage", from, "Carte recue : " + getCarte());
         traitement(cli, from);
     }
 

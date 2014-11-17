@@ -26,12 +26,10 @@ public class DistributionPokerMessage extends PokerMessage {
         try {
 
             cli.getCartes().add(getCarte());
+            cli.getLogger().write("DistributionPokerMessage", from, "Carte : " + cli.getCartes().size() + "/ 5");
             if (cli.getCartes().size() == 5) {
-                System.out.println("Cartes recus, on attend notr tour pour echanger");
                 if (cli.getNom().compareTo(cli.getMaitre().getNom()) == 0) {
-
                     cli.getReso().broadcastMessage(cli.getNom(), new FinDistributionPokerMessage());
-
                 }
             }
         } catch (Exception ex) {

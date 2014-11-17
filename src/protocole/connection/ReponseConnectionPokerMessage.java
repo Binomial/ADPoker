@@ -23,7 +23,7 @@ public class ReponseConnectionPokerMessage extends PokerMessage implements Seria
     public void traitementMessage(Client cli, String from) {
         if (!cli.existeJoueur(from)) {
             cli.getListJoueurs().add(new Joueur(from));
-            System.out.println(getNom() + " nous a accepte");
+            cli.getLogger().write("ReponseConnectionPokerMessage", from, getNom() + " nous a accepte");
         }
     }
 

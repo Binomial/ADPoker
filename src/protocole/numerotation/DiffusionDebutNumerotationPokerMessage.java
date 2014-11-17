@@ -37,19 +37,14 @@ public class DiffusionDebutNumerotationPokerMessage extends PokerMessage impleme
         try {
             cli.setEnEcoute(false);
             if (cli.getId() == -1) {
-                for (Joueur joueur : cli.getListJoueurs()) {//Affiche la liste des joueurs
-                    System.out.println("!!!" + joueur.getNom());
-                }
                 if (cli.getListJoueurs().size() != getNbAdversaire()) {
-                    System.out.println("Mise a jour de la liste des adversaires");
+                    cli.getLogger().write("DiffusionDebutNumerotationPokerMessage", from, "Mise a jour de la liste des adversaires");
                     cli.setListJoueurs(joueursList);
-                    System.out.println("MAJ ok");
                 }
-                cli.setNbConflit(cli.getListJoueurs().size() - 1);
-                System.out.println(from + " On commence la numerotation");
+                cli.setNbConflit(cli.getListJoueurs().size() - 1);                
+                cli.getLogger().write("DiffusionDebutNumerotationPokerMessage", from, "Commencement numerotation");
                 cli.setId(Client.alea(0, cli.getListJoueurs().size() - 1));
-                System.out.println("Mon Id : " + cli.getId());
-                System.out.println("Mon Nom : " + cli.getNom());
+                cli.getLogger().write("DiffusionDebutNumerotationPokerMessage", from, "ID : "+cli.getId());
                 DiffusionNumerotationPokerMessage numerotationMsg = new DiffusionNumerotationPokerMessage(cli.getId(), cli.getNom(), true);
 
                 cli.getReso().broadcastMessage(cli.getNom(), numerotationMsg);
