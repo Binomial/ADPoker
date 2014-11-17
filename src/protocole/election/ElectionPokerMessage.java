@@ -42,14 +42,7 @@ public class ElectionPokerMessage extends PokerMessage {
             } else if (getNumeroPlusFort() == cli.getId() && getId() == cli.getId()) {
                 cli.getLogger().write("ElectionPokerMessage", from, "mon ID : " + cli.getId() + " == numero Plus Fort : " + getNumeroPlusFort() + "=> MAITRE");
                 cli.setJeu(new JeuCartes());
-                cli.getReso().broadcastMessage(cli.getNom(), new DiffusionMaitre(cli.getNom()));
-                for (int i = 0; i < 5; i++) {
-                    cli.getLogger().write("Distribution", from, "Tour : " + i + " / 5");
-                    for (Joueur adve : cli.getListJoueurs()) {
-                        DistributionPokerMessage distributionMessage = new DistributionPokerMessage(cli.getJeu().nvlleCarte());
-                        cli.getReso().sendMessage(cli.getNom(), adve.getNom(), distributionMessage);
-                    }
-                }
+                cli.getReso().broadcastMessage(cli.getNom(), new DiffusionMaitre(cli.getNom()));                
             }
         } catch (Exception ex) {
             ex.printStackTrace();

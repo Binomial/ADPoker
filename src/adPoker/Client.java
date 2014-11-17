@@ -34,6 +34,7 @@ public class Client extends UnicastRemoteObject implements IClient {
     //election
     private int numeroPlusFort;
     private Joueur maitre;
+    private int nbFinElection;
     //distribution
     private int nbDistribOk;
     //echange
@@ -42,7 +43,7 @@ public class Client extends UnicastRemoteObject implements IClient {
     public static final int NB_TOUR_MAX = 1;
     //fin
     private int nbFinOk;
-    
+
     private ADLogger logger;
 
     Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
@@ -59,7 +60,8 @@ public class Client extends UnicastRemoteObject implements IClient {
         nbDistribOk = 0;
         nbTour = 0;
         nbFinOk = 0;
-        
+        nbFinElection = 0;
+
         logger = new ADLogger(nom);
     }
 
@@ -77,6 +79,14 @@ public class Client extends UnicastRemoteObject implements IClient {
 
     public ADLogger getLogger() {
         return logger;
+    }
+
+    public int getNbFinElection() {
+        return nbFinElection;
+    }
+
+    public void setNbFinElection(int nbFinElection) {
+        this.nbFinElection = nbFinElection;
     }
 
     public IReso getReso() {

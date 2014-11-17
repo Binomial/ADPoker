@@ -38,7 +38,6 @@ public class DiffusionConnectionPokerMessage extends PokerMessage {
 
                 cli.getReso().sendMessage(nom, from, msg2);
                 cli.getLogger().write("DiffusionConnectionPokerMessage", from, getNom());
-                System.out.println(from + " a rejoint la partie");
             } else {
                 cli.getLogger().write("DiffusionConnectionPokerMessage", from, "Arrive trop tard : EJECTION");
                 cli.getReso().sendMessage(nom, from, new EjectionPokerMessage());

@@ -76,12 +76,9 @@ public class MainClient implements Serializable {
     public void ecoute() throws NotBoundException, MalformedURLException, RemoteException, InterruptedException {
         Thread.sleep(20000);
         if (client.isEnEcoute()) {
-            System.out.println("FIN DU CHRONO | On fait un broadcast de fin d'attente");
             client.setEnEcoute(false);
             adversaires = client.getAdversaires();
             reso.broadcastMessage(nom, new DiffusionDebutNumerotationPokerMessage(adversaires));
-            System.out.println("mon ID : " + client.getId());
-            System.out.println("mon Nom : " + client.getNom());
         }
     }
 

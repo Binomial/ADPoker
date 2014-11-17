@@ -30,7 +30,6 @@ public class DiffusionFinNumerotationPokerMessage extends PokerMessage {
             for (Joueur adv : cli.getListJoueurs()) {
                 if (adv.getNom().compareTo(from) == 0) {
                     cli.getLogger().write("DiffusionFinNumerotationPokerMessage", from, "Attribution definitive :  " + from + " <= " + cli.getId());
-                    System.out.println(adv.getNom() + "=>" + getId());
                     adv.setId(this.getId()); //attributuion de l'ID
                 }
             }
