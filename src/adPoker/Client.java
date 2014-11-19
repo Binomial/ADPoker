@@ -46,11 +46,11 @@ public class Client extends UnicastRemoteObject implements IClient {
 
     private ADLogger logger;
 
-    Client(String nom) throws RemoteException, NotBoundException, MalformedURLException {
+    Client(String nom, String nomReso) throws RemoteException, NotBoundException, MalformedURLException {
         super();
         this.nom = nom;
         ejection = false;
-        reso = (IReso) Naming.lookup(IReso.NAME);
+        reso = (IReso) Naming.lookup(nomReso);
         enEcoute = true;
         listJoueurs = new ArrayList<>();
         cartes = new ArrayList<>();

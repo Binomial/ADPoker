@@ -24,9 +24,9 @@ public class MainClient implements Serializable {
     private Client client;
     private int nbFinNumerotation;
 
-    public MainClient(String nom) throws RemoteException, NotBoundException, MalformedURLException {
+    public MainClient(String nom, String nomReso) throws RemoteException, NotBoundException, MalformedURLException {
         this.nom = nom;
-        client = new Client(nom);
+        client = new Client(nom, nomReso);
         nbFinNumerotation = 0;
     }
 
@@ -90,7 +90,7 @@ public class MainClient implements Serializable {
             
             machine = "//" + machine + "/" + IReso.NAME;
             
-            MainClient joueurLocal = new MainClient(nom);            
+            MainClient joueurLocal = new MainClient(nom, machine);            
             joueurLocal.connection(machine );
             joueurLocal.ecoute();
 
