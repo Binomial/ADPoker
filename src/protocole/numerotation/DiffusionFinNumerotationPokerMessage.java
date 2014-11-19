@@ -3,8 +3,6 @@ package protocole.numerotation;
 import adPoker.Client;
 import adPoker.Joueur;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import protocole.PokerMessage;
 import protocole.TypeMessage;
 import protocole.election.ElectionPokerMessage;
